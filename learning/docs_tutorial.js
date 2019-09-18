@@ -842,6 +842,8 @@ function NumberList(props) {
 //
 // Ch 9: Forms
 //       https://reactjs.org/docs/forms.html
+//          Note: forms in React are not exactly fully-fledged
+//                for a 'turnkey' solution, check out Formik (https://jaredpalmer.com/formik)
 //
 //    Consider the following simple HTML form:
 //
@@ -862,6 +864,8 @@ function NumberList(props) {
 //   Controlled Components:
 //       In HTML, form elements can typically maintain their own state which can lead to confusion when using React
 //       Instead, use React's state as the 'master state' 
+//          Note: controlled components is usually recommended but can become quite tedious in larger applications
+//                in which case you can use 'uncontrolled components' --- see https://reactjs.org/docs/uncontrolled-components.html
 class NameForm extends React.Component {
     constructor(props) {
       super(props);
@@ -996,4 +1000,68 @@ class FlavorForm extends React.Component {
 
 
 
+//
+//
+// Handling Multiple Inputs
+//
+//    When handling multiple inputs, give them each a 'name' attribute then add a conditional to the handler function based on event.target.name
+//        Note: the below example uses ES6 'computed property name' syntax to update the state key
+class Reservation extends React.Component {
+    constructor(props) {
+      super(props);
+      this.state = {
+        isGoing: true,
+        numberOfGuests: 2
+      };
+  
+      this.handleInputChange = this.handleInputChange.bind(this);
+    }
+  
+    handleInputChange(event) {
+      const target = event.target;
+      const value = target.type === 'checkbox' ? target.checked : target.value;
+      const name = target.name;
+  
+      this.setState({
+        [name]: value
+      });
+    }
+  
+    render() {
+      return (
+        <form>
+          <label>
+            Is going:
+            <input
+              name="isGoing"
+              type="checkbox"
+              checked={this.state.isGoing}
+              onChange={this.handleInputChange} />
+          </label>
+          <br />
+          <label>
+            Number of guests:
+            <input
+              name="numberOfGuests"
+              type="number"
+              value={this.state.numberOfGuests}
+              onChange={this.handleInputChange} />
+          </label>
+        </form>
+      );
+    }
+}
 
+
+
+
+
+
+//
+//
+//
+// Ch 10: Lifting State Up
+//        https://reactjs.org/docs/lifting-state-up.html
+//
+//      Often, several components need to reflect the same data. In this case, it is smart to 
+//        'lift up' the data to the closest common ancestor. For example:
